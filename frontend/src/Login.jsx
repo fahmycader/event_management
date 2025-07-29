@@ -101,7 +101,7 @@ function Login({ onLogin }) {
         <p className="mt-5 text-muted small">© 2025 ALL RIGHTS RESERVED</p>
       </div>
 
-      {/* ✅ RIGHT SIDE - Image & Overlay */}
+     
       <div className="position-relative w-50 d-flex align-items-center justify-content-center p-3">
         <img
           src="/login-side-image.png"

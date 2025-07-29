@@ -9,6 +9,7 @@ const eventSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   invitees: [String],
   rsvps: [{ email: String, status: String }],
+  image: String  // store image filename
 });
 
-module.exports = mongoose.model('Event', eventSchema); 
+module.exports = mongoose.model('Event', eventSchema);

@@ -27,7 +27,7 @@ function Dashboard({ token, onLogout }) {
 
   return (
     <DashboardLayout onLogout={onLogout}>
-    <FilterCard/>
+   
 
       {loading ? (
         <div>Loading...</div>

@@ -1,15 +1,20 @@
 const mongoose = require('mongoose');
 
-const eventSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
   name: String,
-  date: String,
+  date: Date,
   time: String,
   location: String,
   description: String,
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   invitees: [String],
-  rsvps: [{ email: String, status: String }],
-  image: String  // store image filename
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  image: String,
+  rsvps: [
+    {
+      email: String,
+      status: { type: String, enum: ["Yes", "No"], default: "No" }
+    }
+  ]
 });
 
-module.exports = mongoose.model('Event', eventSchema);
+module.exports = mongoose.model("Event", EventSchema);

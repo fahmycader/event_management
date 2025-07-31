@@ -10,16 +10,37 @@ function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
-        onLogin(data.token);
-        navigate("/dashboard"); //  redirect to dashboard
+        // ✅ Save token & role
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        if (onLogin) onLogin(data.token, data.role);
+
+        // ✅ Redirect based on role
+        if (data.role === "planner") {
+          navigate("/dashboard");
+        } else {
+          // ✅ attendee logic
+          const pendingEvent = localStorage.getItem("pendingEvent");
+
+          if (pendingEvent) {
+            navigate(`/event/${pendingEvent}`);
+            localStorage.removeItem("pendingEvent"); // clear after use
+          } else {
+            navigate("/"); // ✅ Redirect to home instead of events
+          }
+        }
       } else {
         setError(data.error || "Login failed");
       }
@@ -30,23 +51,18 @@ function Login({ onLogin }) {
 
   return (
     <div className="d-flex min-vh-100 bg-white">
-      
-      {/* ✅ LEFT SIDE - Login Form */}
+      {/* ✅ Left Section */}
       <div className="d-flex flex-column justify-content-center px-5 w-50">
-        
-        {/* 🔹 Logo & App Name */}
         <div className="d-flex align-items-center gap-2 mb-4">
-          <img src="/logo.png" alt="Logo" style={{ height: "32px", width: "auto" }} />
+          <img src="/logo.png" alt="Logo" style={{ height: "32px" }} />
           <span className="fs-4 fw-semibold text-dark">Eventure</span>
         </div>
 
-        {/* 🔹 Title & Welcome Text */}
         <h2 className="fs-1 fw-bold text-dark mb-2">Welcome Back 👋</h2>
         <p className="text-muted mb-4">
           Eventure – Where Every Event Begins With Insight.
         </p>
 
-        {/* 🔹 Login Form */}
         <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
           <div>
             <label className="form-label">Email</label>
@@ -72,22 +88,27 @@ function Login({ onLogin }) {
             />
           </div>
 
-          {/* Forgot Password */}
-          <div className="text-end">
-            <a href="/forgot-password" className="text-decoration-none text-primary">
-              Forgot Password?
-            </a>
+          {/* ✅ Forgot Password Link */}
+          <div className="text-end mt-1">
+            <button
+              type="button"
+              onClick={() => navigate("/forgot-password")}
+              className="btn btn-link p-0 text-decoration-none"
+              style={{ fontSize: "14px", color: "#6366F1" }}
+            >
+              🔑 Forgot Password?
+            </button>
           </div>
 
-          {/* Error Message */}
           {error && <div className="text-danger text-center small">{error}</div>}
 
-          {/* Sign in Button */}
-          <button type="submit" className="btn btn-dark fw-semibold rounded py-2 mt-2">
+          <button
+            type="submit"
+            className="btn btn-dark fw-semibold rounded py-2 mt-2"
+          >
             Sign in
           </button>
 
-          {/* ✅ Link to Register */}
           <button
             type="button"
             className="btn btn-outline-secondary fw-semibold rounded py-2 mt-2"
@@ -96,25 +117,18 @@ function Login({ onLogin }) {
             Don’t have an account? Create Account
           </button>
         </form>
-
-        {/* 🔹 Footer */}
-        <p className="mt-5 text-muted small">© 2025 ALL RIGHTS RESERVED</p>
       </div>
 
-     
+      {/* ✅ Right Section */}
       <div className="position-relative w-50 d-flex align-items-center justify-content-center p-3">
         <img
           src="/login-side-image.png"
           alt="Eventure"
           className="position-absolute top-0 start-0 w-100 h-100"
-          style={{
-            objectFit: "cover",
-            height: "90%",
-            borderRadius: "30px",
-          }}
+          style={{ objectFit: "cover", height: "90%", borderRadius: "30px" }}
         />
         <div className="position-relative z-1 text-center">
-          <img src="/logo.png" alt="Logo" className="mb-3" style={{ height: "64px", width: "auto" }} />
+          <img src="/logo.png" alt="Logo" className="mb-3" style={{ height: "64px" }} />
           <h1 className="fw-bold text-dark" style={{ fontSize: "3rem" }}>Eventure</h1>
         </div>
       </div>

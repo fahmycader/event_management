@@ -40,19 +40,48 @@ export default function FilterHeader({ onSearch, onFilter, onDate }) {
 
         {/* 📊 Attendee Insights Dropdown */}
         <div className="dropdown">
-          <button
-            className="btn btn-outline-secondary dropdown-toggle fw-semibold"
-            type="button"
-            data-bs-toggle="dropdown"
-          >
-            Attendee Insights
-          </button>
-          <ul className="dropdown-menu">
-            <li><a className="dropdown-item" href="#">Top Attendees</a></li>
-            <li><a className="dropdown-item" href="#">Engagement Stats</a></li>
-            <li><a className="dropdown-item" href="#">Export Data</a></li>
-          </ul>
+          
         </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        <div className="dropdown">
+          
+        </div>
+        
       </div>
 
       {/* ✅ RIGHT SECTION: Search + Filters */}

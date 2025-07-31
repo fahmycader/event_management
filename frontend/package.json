@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
+    "aos": "^2.3.4",
     "bootstrap": "^5.3.7",
     "lucide-react": "^0.533.0",
     "mongodb": "^6.18.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.5.2",
+    "recharts": "^3.1.0",
+    "swiper": "^11.2.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

@@ -45,7 +45,7 @@ export default function AddEvent({ token, onLogout }) {
     if (!form.name.trim()) newErrors.name = "Event name is required.";
     if (!form.date) newErrors.date = "Please select a date.";
     if (!form.time) newErrors.time = "Please select a time.";
-
+  
     // ✅ Date & Time Validation
     if (form.date && form.time) {
       const selectedDateTime = new Date(`${form.date}T${form.time}`);
@@ -55,19 +55,25 @@ export default function AddEvent({ token, onLogout }) {
         newErrors.time = "Event date & time cannot be in the past.";
       }
     }
-
+  
     if (!form.location.trim()) newErrors.location = "Event location is required.";
     if (!form.description.trim())
       newErrors.description = "Please provide a description.";
-    if (!form.price || form.price <= 0)
-      newErrors.price = "Ticket price must be greater than 0.";
+  
+    // ✅ Price is optional but cannot be negative
+    if (form.price && form.price < 0)
+      newErrors.price = "Ticket price cannot be negative.";
+  
+    // ✅ Seats are required
     if (!form.seats || form.seats <= 0)
       newErrors.seats = "Seat amount must be greater than 0.";
+  
     if (!form.tags.trim()) newErrors.tags = "Please enter at least one tag.";
     if (!imageFile) newErrors.image = "Please upload an event image.";
-
+  
     return newErrors;
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +107,7 @@ export default function AddEvent({ token, onLogout }) {
       if (!res.ok) throw new Error("Failed to create event");
 
      
-      toast.success("✅ Event created successfully!");
+      toast.success(" Event created successfully!");
       setForm({
         name: "",
         date: "",
@@ -117,7 +123,7 @@ export default function AddEvent({ token, onLogout }) {
       setErrors({});
     } catch (err) {
       console.error(err);
-      alert("❌ Error creating event");
+      alert(" Error creating event");
     } finally {
       setLoading(false);
     }
@@ -129,7 +135,7 @@ export default function AddEvent({ token, onLogout }) {
         className="card shadow-sm border-0 h-90"
         style={{ borderRadius: "16px", overflow: "hidden", padding: "16px" }}
       >
-        <h3 className="fw-bold text-primary mb-4">➕ Add New Event</h3>
+        <h3 className="fw-bold text-primary mb-4">Add New Event</h3>
       </div>
       <div className="mb-4"></div>
       <div

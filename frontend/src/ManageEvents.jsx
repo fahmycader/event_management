@@ -85,6 +85,8 @@ function Dashboard({ token, onLogout }) {
                 name={event.name}
                 date={event.date}
                 time={event.time}
+                price={event.price}
+                seats={event.seats}
                 location={event.location}
                 description={event.description}
                 invitees={event.invitees}

@@ -9,6 +9,8 @@ const EventSchema = new mongoose.Schema({
   invitees: [String],
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   image: String,
+  price: { type: Number, default: null }, 
+  seats: { type: Number, default: null },
   rsvps: [
     {
       email: String,

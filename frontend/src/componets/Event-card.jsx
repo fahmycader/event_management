@@ -56,7 +56,7 @@ const EventCard = ({
         {/* 📅 Date */}
         <p className="mb-1 d-flex align-items-center">
           <Calendar size={16} className="me-2 text-primary" />
-          <strong>Date:</strong>&nbsp;{date}
+          <strong>Date:</strong>&nbsp;{new Date(date).toLocaleDateString("en-GB")}
         </p>
 
         {/* ⏰ Time */}

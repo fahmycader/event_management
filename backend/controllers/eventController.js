@@ -54,11 +54,11 @@ exports.rsvpEvent = async (req, res) => {
 
     // ✅ Send RSVP email
     await transporter.sendMail(mailOptions);
-    console.log(`✅ RSVP email sent to ${user.email}`);
+    console.log(` RSVP email sent to ${user.email}`);
 
-    res.json({ message: "✅ RSVP email sent successfully" });
+    res.json({ message: " RSVP email sent successfully" });
   } catch (err) {
-    console.error("❌ RSVP Error:", err);
+    console.error(" RSVP Error:", err);
     res.status(500).json({ error: "Failed to send RSVP email" });
   }
 };
@@ -69,7 +69,7 @@ exports.rsvpFromEmail = async (req, res) => {
 
     // ✅ Find event
     const event = await Event.findById(eventId);
-    if (!event) return res.status(404).send("❌ Event not found");
+    if (!event) return res.status(404).send("Event not found");
 
     // ✅ Update RSVP
     const existing = event.rsvps.find(r => r.email === email);
@@ -85,14 +85,14 @@ exports.rsvpFromEmail = async (req, res) => {
     res.send(`
       <html>
         <body style="font-family: Arial; text-align:center; margin-top:50px;">
-          <h2>✅ Thank you for your response!</h2>
+          <h2>Thank you for your response!</h2>
           <p>Your RSVP for <b>${event.name}</b> has been marked as <b>${status}</b>.</p>
         </body>
       </html>
     `);
   } catch (err) {
-    console.error("❌ RSVP Email Update Error:", err);
-    res.status(500).send("❌ Something went wrong.");
+    console.error(" RSVP Email Update Error:", err);
+    res.status(500).send(" Something went wrong.");
   }
 };
 
@@ -157,7 +157,7 @@ exports.getAllAttendees = async (req, res) => {
 
 exports.createEvent = async (req, res) => {
   try {
-    const { name, date, time, location, description, invitees } = req.body;
+    const { name, date, time, location, description, invitees, price, seats } = req.body;
 
     const event = new Event({
       name,
@@ -168,7 +168,9 @@ exports.createEvent = async (req, res) => {
       invitees: invitees ? invitees.split(',') : [], // turn CSV into array
       owner: req.userId,
       rsvps: [],
-      image: req.file ? req.file.filename : null // store filename if uploaded
+      image: req.file ? req.file.filename : null, // store filename if uploaded
+      price: price ? Number(price) : null,        // ✅ optional price
+      seats: seats ? Number(seats) : null         // ✅ optional seats
     });
 
     await event.save();
@@ -178,6 +180,7 @@ exports.createEvent = async (req, res) => {
     res.status(500).json({ error: 'Failed to create event' });
   }
 };
+
 
 /**
  * ✅ Get All Events for Logged-in User
@@ -216,33 +219,49 @@ exports.editEvent = async (req, res) => {
   try {
     const event = await Event.findOne({ _id: req.params.id, owner: req.userId });
     if (!event) {
-      return res.status(404).json({ error: 'Event not found or not yours' });
+      return res.status(404).json({ error: "Event not found or not owned by you" });
     }
 
     // ✅ If a new image is uploaded, remove the old one
     if (req.file) {
       if (event.image) {
-        const oldImagePath = path.join(__dirname, '../uploads/events', event.image);
+        const oldImagePath = path.join(__dirname, "../uploads/events", event.image);
         fs.unlink(oldImagePath, (err) => {
-          if (err) console.warn('⚠️ Old image could not be deleted:', err);
+          if (err) console.warn("⚠️ Old image could not be deleted:", err);
         });
       }
       event.image = req.file.filename;
     }
 
-    // ✅ Update fields if new data is provided
+    // ✅ Update only if new data is provided
     event.name = req.body.name || event.name;
     event.date = req.body.date || event.date;
     event.time = req.body.time || event.time;
     event.location = req.body.location || event.location;
     event.description = req.body.description || event.description;
-    event.invitees = req.body.invitees ? req.body.invitees.split(',') : event.invitees;
+    event.invitees = req.body.invitees
+      ? req.body.invitees.split(",")
+      : event.invitees;
+
+    // ✅ NEW FIELDS ADDED
+    if (req.body.price !== undefined) {
+      event.price = req.body.price === "" ? null : Number(req.body.price);
+    }
+
+    if (req.body.seats !== undefined) {
+      event.seats = req.body.seats === "" ? null : Number(req.body.seats);
+    }
+
+    if (req.body.tags !== undefined) {
+      event.tags = req.body.tags || event.tags;
+    }
 
     await event.save();
-    res.json({ message: '✅ Event updated successfully', event });
+
+    res.json({ message: "Event updated successfully", event });
   } catch (err) {
-    console.error('❌ Error editing event:', err);
-    res.status(500).json({ error: 'Failed to edit event' });
+    console.error("Error editing event:", err);
+    res.status(500).json({ error: "Failed to edit event" });
   }
 };
 

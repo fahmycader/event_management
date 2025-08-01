@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { CalendarDays, ArrowLeft, ArrowRight, Users, Home as HomeIcon, Calendar, Phone } from "lucide-react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,7 +14,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const navigate = useNavigate();
-
+  const upcomingEventsRef = useRef(null);
   useEffect(() => {
     async function fetchEvents() {
       setLoading(true);
@@ -41,6 +42,10 @@ function Home() {
     navigate("/login");
   };
 
+  const scrollToUpcomingEvents = () => {
+    upcomingEventsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const totalEvents = events.length;
   const upcomingEvents = events.filter(
     (event) => new Date(event.date) > new Date()
@@ -52,126 +57,188 @@ function Home() {
       {/* ✅ HEADER */}
       <header
         style={{
-          background: "#6C63FF",
-          padding: "15px 40px",
+          background: "linear-gradient(90deg, #6C63FF 0%, #8B80FF 100%)",
+          padding: "18px 50px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           color: "#fff",
           position: "sticky",
           top: "0",
-          zIndex: "10",
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.1)"
+          zIndex: "1000",
+          boxShadow: "0px 6px 18px rgba(0, 0, 0, 0.1)",
         }}
       >
-        {/* 🔹 Logo / Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img src="/logo.png" alt="EventMate" style={{ height: "40px" }} />
-          <h2 style={{ margin: 0, fontWeight: "bold" }}>EventMate</h2>
+        {/* 🔹 Logo + Brand */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img
+            src="/logo.png"
+            alt="EventMate"
+            style={{
+              height: "45px",
+              width: "45px",
+              borderRadius: "50%",
+              background: "#fff",
+              padding: "5px",
+            }}
+          />
+          <h2 style={{ margin: 0, fontWeight: "700", fontSize: "22px", letterSpacing: "1px" }}>
+            EventMate
+          </h2>
         </div>
 
-        {/* 🔹 Nav Links */}
-        <nav style={{ display: "flex", alignItems: "center", gap: "30px" }}>
+        {/* 🔹 Navigation Links */}
+        <nav style={{ display: "flex", alignItems: "center", gap: "35px" }}>
           <Link
             to="/"
-            style={{
-              color: "#fff",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              fontWeight: "500"
-            }}
+            style={navLinkStyle}
           >
-            Home
+            <HomeIcon size={18} /> Home
           </Link>
 
-          <Link
-            to="/events"
-            style={{
-              color: "#fff",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              fontWeight: "500"
-            }}
+          {/* ✅ Clicking this will scroll to section */}
+          <span
+            style={{ ...navLinkStyle, cursor: "pointer" }}
+            onClick={scrollToUpcomingEvents}
           >
-            Events
-          </Link>
+            <Calendar size={18} /> Events
+          </span>
 
-          {/* ✅ Login or Logout Button */}
-          {token ? (
-            <button
-              onClick={handleLogout}
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "#fff",
-                color: "#6C63FF",
-                padding: "8px 15px",
-                borderRadius: "8px",
-                fontWeight: "600",
-                border: "none",
-                cursor: "pointer",
-                transition: "0.3s"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#f1f1f1")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-            >
-              🚪 Logout
-            </button>
-          ) : (
-            <Link
-              to="/login"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "#fff",
-                color: "#6C63FF",
-                padding: "8px 15px",
-                borderRadius: "8px",
-                fontWeight: "600",
-                transition: "0.3s"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#f1f1f1")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-            >
-              🔑 Login
-            </Link>
-          )}
+          <a href="#contact"
+            style={navLinkStyle}>
+            <Phone size={18} /> Contact Us
+          </a>
         </nav>
+
+        {/* 🔹 Login or Logout Button */}
+        {token ? (
+          <button
+            onClick={handleLogout}
+            style={logoutButtonStyle}
+            onMouseEnter={(e) => e.currentTarget.style.background = "#f1f1f1"}
+            onMouseLeave={(e) => e.currentTarget.style.background = "#fff"}
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            style={loginButtonStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#fff";
+              e.currentTarget.style.color = "#6C63FF";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#6C63FF";
+              e.currentTarget.style.color = "#fff";
+            }}
+          >
+            Login
+          </Link>
+        )}
       </header>
       <section
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: "60vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#fff",
-          textAlign: "center",
-        }}
-      >
-        <div data-aos="fade-up">
-          <h1 style={{ fontSize: "48px", fontWeight: "bold", marginBottom: "10px" }}>
-            Plan. Celebrate. Remember.
-          </h1>
-          <p style={{ fontSize: "18px" }}>
-            Discover & manage events with ease — from birthdays to big weddings.
-          </p>
+  className="py-5"
+
+>
+  <div className="container py-5">
+    <div className="row align-items-center g-5">
+
+      {/* ✅ LEFT SIDE CONTENT */}
+      <div className="col-lg-6" data-aos="fade-right">
+  <h1
+    className="fw-bold mb-4"
+    style={{ fontSize: "50px", lineHeight: 1.2 }}
+  >
+    Plan. Host. <br /> Celebrate Your <br /> Events with{" "}
+    <span style={{ color: "#6C63FF" }}>EventMate</span>
+  </h1>
+
+  <p
+    className="text-muted mb-5"
+    style={{ fontSize: "20px", maxWidth: "500px" }}
+  >
+    EventMate is your all-in-one event management platform. we make planning simple,
+    managing smooth, and attending effortless. Discover, create, and share events
+    that bring people together.
+  </p>
+
+  {/* ✅ BUTTONS */}
+  <div className="d-flex gap-4">
+    <button
+      className="btn px-4 py-3 text-white shadow"
+      style={{
+        backgroundColor: "#6C63FF",
+        borderRadius: "10px",
+        fontSize: "18px",
+      }}
+    >
+       Create an Event
+    </button>
+    <button
+      className="btn px-4 py-3 shadow-sm"
+      style={{
+        backgroundColor: "#fff",
+        border: "1px solid #ccc",
+        borderRadius: "10px",
+        fontSize: "18px",
+      }}
+    >
+       Find an Event
+    </button>
+  </div>
+</div>
+
+
+      {/* ✅ RIGHT SIDE IMAGE & FLOATING CARDS */}
+      <div className="col-lg-6 d-flex justify-content-center">
+        <div className="position-relative d-inline-block" data-aos="zoom-in">
+          {/* 🌟 Main Image */}
+          <img
+  src="banner.jpg"
+  alt="Happy Person"
+  className="img-fluid"
+  style={{
+    width: "1000px",   // ⬆️ Increased size
+    maxWidth: "100%",  // ✅ Keeps it responsive for smaller screens
+    borderRadius: "16px",
+    boxShadow: "0px 8px 25px rgba(0,0,0,0.1)",
+  }}
+/>
+          {/* 🎉 Floating Card 1 */}
+        
+          {/* 🎉 Floating Card 2 */}
+          <div
+            className="position-absolute bg-white shadow-lg p-3 rounded"
+            style={{
+              bottom: "30px",
+              right: "30px",
+              width: "180px",
+              borderRadius: "12px",
+            }}
+            data-aos="fade-up-left"
+          >
+            <h6 className="fw-bold mb-1">Build Career</h6>
+            <a
+              href="#"
+              className="text-decoration-none fw-semibold"
+              style={{ color: "#6C63FF" }}
+            >
+              Join Group
+            </a>
+          </div>
         </div>
-      </section>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
 
       {/* ✅ Stats Section */}
-      <section style={{ padding: "50px 20px", textAlign: "center" }}>
+      <section style={{ padding: "20px ", textAlign: "center" }}>
         <div
           style={{
             display: "flex",
@@ -207,193 +274,283 @@ function Home() {
             <p>Upcoming</p>
           </div>
           <div
-            data-aos="fade-up"
-            style={{
-              background: "#f8f9fa",
-              padding: "20px",
-              borderRadius: "12px",
-              width: "30%",
-              boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-            }}
-          >
-            <h2>{completedEvents}</h2>
-            <p>Completed</p>
-          </div>
+  data-aos="fade-up"
+  className="btn px-4 py-3 text-white shadow"
+  style={{
+    backgroundColor: "#6C63FF",
+    padding: "20px",
+    borderRadius: "12px",
+    width: "30%",
+    boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+    fontSize: "18px",
+  }}
+>
+  <h2>{completedEvents}</h2>
+  <p>Completed</p>
+</div>
+
         </div>
       </section>
 
-      {/* ✅ Events Section */}
-      <section style={{ padding: "40px 50px", background: "#f9f9f9" }}>
-        <h2
-          style={{
-            marginBottom: "30px",
-            fontSize: "28px",
-            fontWeight: "700",
-            textAlign: "center",
-          }}
-        >
-          📅 All Events
-        </h2>
 
-        {loading ? (
-          <div style={{ textAlign: "center" }}>Loading events...</div>
-        ) : events.length === 0 ? (
-          <div style={{ textAlign: "center" }}>No events available.</div>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "25px",
-            }}
-          >
-           {[...events]
-  .sort((a, b) => new Date(b.date) - new Date(a.date)) // 🔽 Descending
-  .slice(0, 6)
-  .map((event) => {
-    const eventDate = new Date(event.date);
-    const today = new Date();
-    let status = "";
-    let badgeColor = "";
-    let isCompleted = false;
+      <section ref={upcomingEventsRef} style={{ padding: "50px 40px", background: "#fff" }}>
+  {/* ✅ Section Header */}
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
+    <h2 style={{ fontSize: "28px", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px" }}>
+      <CalendarDays size={22} color="#6C63FF" /> Upcoming Events
+    </h2>
+    <div style={{ display: "flex", gap: "15px", fontSize: "20px", cursor: "pointer" }}>
+      <ArrowLeft size={22} color="#6C63FF" />
+      <ArrowRight size={22} color="#6C63FF" />
+    </div>
+  </div>
 
-    if (eventDate.toDateString() === today.toDateString()) {
-      status = "Today";
-      badgeColor = "#FFD700";
-    } else if (eventDate > today) {
-      status = "Upcoming";
-      badgeColor = "#4CAF50";
-    } else {
-      status = "Completed";
-      badgeColor = "#E53935";
-      isCompleted = true;
-    }
+  {loading ? (
+    <div style={{ textAlign: "center" }}>Loading events...</div>
+  ) : events.length === 0 ? (
+    <div style={{ textAlign: "center" }}>No events available.</div>
+  ) : (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+        gap: "25px",
+      }}
+    >
+      {[...events]
+        .sort((a, b) => new Date(b.date) - new Date(a.date)) // 🔽 DESCENDING order (latest first)
+        .slice(0, 6)
+        .map((event) => {
+          const eventDate = new Date(event.date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // normalize today for comparison
 
-    return (
-      <div
-        key={event._id}
-        data-aos="fade-up"
-        style={{
-          background: isCompleted ? "#f5f5f5" : "#fff",
-          borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-          overflow: "hidden",
-          transition: "transform 0.3s ease",
-          cursor: isCompleted ? "not-allowed" : "pointer",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          opacity: isCompleted ? 0.6 : 1,
-          pointerEvents: isCompleted ? "none" : "auto",
-        }}
-      >
-        <div style={{ position: "relative" }}>
-          <img
-            src={`http://localhost:5000/uploads/events/${event.image}`}
-            alt={event.name}
-            style={{
-              width: "100%",
-              height: "180px",
-              objectFit: "cover",
-              filter: isCompleted ? "grayscale(80%)" : "none",
-            }}
-          />
-          <span
-            style={{
-              position: "absolute",
-              top: "10px",
-              left: "10px",
-              background: badgeColor,
-              color: "#fff",
-              padding: "5px 12px",
-              borderRadius: "20px",
-              fontSize: "12px",
-              fontWeight: "600",
-            }}
-          >
-            {status}
-          </span>
-        </div>
+          let status = "";
+          let badgeColor = "";
 
-        <div style={{ padding: "15px", flex: "1" }}>
-          <h3 style={{ marginBottom: "8px", fontSize: "20px" }}>
-            {event.name}
-          </h3>
-          <p style={{ margin: "5px 0", color: "#555", fontSize: "14px" }}>
-            📍 {event.location}
-          </p>
-          <p style={{ margin: "5px 0", color: "#555", fontSize: "14px" }}>
-            📆 {new Date(event.date).toLocaleDateString()}
-          </p>
-          <p style={{ margin: "5px 0", color: "#555", fontSize: "14px" }}>
-            🕒 {event.time}
-          </p>
-        </div>
+          if (eventDate < today) {
+            status = " Completed";
+            badgeColor = "#6c757d"; // gray
+          } else if (eventDate.toDateString() === today.toDateString()) {
+            status = " Happening Soon";
+            badgeColor = "#ff9800"; // orange
+          } else {
+            status = "Upcoming";
+            badgeColor = "#4caf50"; // green
+          }
 
-        <div
-          style={{
-            borderTop: "1px solid #eee",
-            padding: "12px",
-            textAlign: "center",
-            background: "#fafafa",
-          }}
-        >
-          {isCompleted ? (
-            <button
-              disabled
+          const formattedDate = eventDate.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          });
+
+          return (
+            <div
+              key={event._id}
+              data-aos="fade-up"
               style={{
-                width: "100%",
-                background: "#ccc",
-                color: "#fff",
-                padding: "10px 0",
-                border: "none",
-                borderRadius: "8px",
-                fontWeight: "600",
-                cursor: "not-allowed",
+                background: "#fff",
+                borderRadius: "16px",
+                boxShadow: "0px 6px 18px rgba(0, 0, 0, 0.08)",
+                overflow: "hidden",
+                transition: "transform 0.3s ease",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                opacity: status === " Completed" ? 0.7 : 1, // faded if completed
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
-              ❌ Completed
-            </button>
-          ) : (
-            <Link to={`/event/${event._id}`} style={{ textDecoration: "none" }}>
-              <button
-                style={{
-                  width: "100%",
-                  background: "#6C63FF",
-                  color: "#fff",
-                  padding: "10px 0",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                👁 View
-              </button>
-            </Link>
-          )}
-        </div>
-      </div>
-    );
-  })}
+              {/* ✅ Event Image */}
+              <div style={{ position: "relative" }}>
+                <img
+                  src={`http://localhost:5000/uploads/events/${event.image}`}
+                  alt={event.name}
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    filter: status === " Completed" ? "grayscale(70%)" : "none",
+                  }}
+                />
+                {/* ✅ Status Badge */}
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    background: badgeColor,
+                    color: "#fff",
+                    padding: "6px 14px",
+                    borderRadius: "20px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {status}
+                </span>
 
-          </div>
-        )}
+                {/* ✅ Date Badge */}
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: "10px",
+                    left: "10px",
+                    background: "#6C63FF",
+                    color: "#fff",
+                    padding: "6px 14px",
+                    borderRadius: "20px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <CalendarDays size={14} /> {formattedDate} | {event.time}
+                </span>
+              </div>
+
+              {/* ✅ Event Details */}
+              <div style={{ padding: "15px" }}>
+                <h3 style={{ marginBottom: "8px", fontSize: "20px", fontWeight: "700" }}>
+                  {event.name}
+                </h3>
+                <p style={{ margin: "5px 0 15px", color: "#555", fontSize: "14px" }}>
+                  {event.description?.slice(0, 70) || "Join us for an exciting event and network with others!"}
+                </p>
+
+                {/* ✅ Footer: avatars + more details */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alice" style={{ width: "28px", height: "28px", borderRadius: "50%", marginLeft: "-5px" }} />
+  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bob" style={{ width: "28px", height: "28px", borderRadius: "50%", marginLeft: "-5px" }} />
+  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie" style={{ width: "28px", height: "28px", borderRadius: "50%", marginLeft: "-5px" }} />
+  <span style={{ fontSize: "14px", fontWeight: "600", display: "flex", alignItems: "center", gap: "5px" }}>
+    <Users size={14} color="#6C63FF" /> 50+
+  </span>
+</div>
+                  <Link
+                    to={`/event/${event._id}`}
+                    style={{ textDecoration: "none", fontSize: "14px", fontWeight: "600", color: "#6C63FF" }}
+                  >
+                    More Details →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  )}
+</section>
+
+
+ {/* ✅ CONTACT US SECTION */}
+ <section id="contact" style={{ background: "#f8f9fa", padding: "60px 20px", textAlign: "center" }}>
+        <h2 style={{ fontSize: "30px", fontWeight: "700", color: "#6C63FF", marginBottom: "20px" }}>
+          Contact Us
+        </h2>
+        <p style={{ maxWidth: "500px", margin: "0 auto", color: "#555", marginBottom: "30px" }}>
+          Got a question, feedback, or partnership inquiry? Reach out to us and we’ll get back to you.
+        </p>
+        <form style={{ maxWidth: "600px", margin: "0 auto" }}>
+          <input type="text" placeholder="Your Name" style={inputStyle} required />
+          <input type="email" placeholder="Your Email" style={inputStyle} required />
+          <textarea placeholder="Your Message" rows="4" style={{ ...inputStyle, height: "120px" }} required></textarea>
+          <button type="submit" style={contactButton}>Send Message</button>
+        </form>
       </section>
 
       {/* ✅ Footer */}
       <footer
-        style={{
-          marginTop: "50px",
-          textAlign: "center",
-          padding: "20px",
-          background: "#f1f1f1",
-        }}
-      >
-        <p>© {new Date().getFullYear()} EventMate. Crafted with ❤️</p>
-      </footer>
+  style={{
+    marginTop: "50px",
+    textAlign: "center",
+    padding: "20px",
+    textDecoration: "underline",  
+  }}
+>
+  <p>© {new Date().getFullYear()} EventMate.</p>
+</footer>
+
     </div>
   );
 }
 
 export default Home;
+
+
+
+
+/* ✅ Styles */
+const navLinkStyle = {
+  color: "#fff",
+  textDecoration: "none",
+  fontSize: "16px",
+  fontWeight: "500",
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  transition: "color 0.3s ease",
+};
+
+const loginButtonStyle = {
+  background: "#6C63FF",
+  color: "#fff",
+  padding: "10px 22px",
+  borderRadius: "50px",
+  fontWeight: "700",
+  fontSize: "15px",
+  textDecoration: "none",
+  boxShadow: "0px 4px 10px rgba(0,0,0,0.15)",
+  transition: "all 0.3s ease",
+};
+
+const logoutButtonStyle = {
+  background: "#fff",
+  color: "#6C63FF",
+  padding: "10px 20px",
+  borderRadius: "50px",
+  border: "none",
+  fontWeight: "600",
+  fontSize: "15px",
+  cursor: "pointer",
+  boxShadow: "0px 4px 10px rgba(0,0,0,0.15)",
+  transition: "all 0.3s ease",
+};
+
+const primaryButton = {
+  backgroundColor: "#6C63FF",
+  borderRadius: "10px",
+  fontSize: "18px",
+};
+
+const secondaryButton = {
+  backgroundColor: "#fff",
+  border: "1px solid #ccc",
+  borderRadius: "10px",
+  fontSize: "18px",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginBottom: "15px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  fontSize: "16px",
+};
+
+const contactButton = {
+  background: "#6C63FF",
+  color: "#fff",
+  padding: "12px 25px",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "600",
+  cursor: "pointer",
+  fontSize: "16px",
+};

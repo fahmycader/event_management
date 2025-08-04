@@ -55,12 +55,12 @@ function Login({ onLogin }) {
       <div className="d-flex flex-column justify-content-center px-5 w-50">
         <div className="d-flex align-items-center gap-2 mb-4">
           <img src="/logo.png" alt="Logo" style={{ height: "32px" }} />
-          <span className="fs-4 fw-semibold text-dark">Eventure</span>
+          <span className="fs-4 fw-semibold text-dark">EventMate</span>
         </div>
 
         <h2 className="fs-1 fw-bold text-dark mb-2">Welcome Back 👋</h2>
         <p className="text-muted mb-4">
-          Eventure – Where Every Event Begins With Insight.
+          EventMate – Where Every Event Begins With Insight.
         </p>
 
         <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
@@ -123,13 +123,13 @@ function Login({ onLogin }) {
       <div className="position-relative w-50 d-flex align-items-center justify-content-center p-3">
         <img
           src="/login-side-image.png"
-          alt="Eventure"
+          alt="EventMate"
           className="position-absolute top-0 start-0 w-100 h-100"
           style={{ objectFit: "cover", height: "90%", borderRadius: "30px" }}
         />
         <div className="position-relative z-1 text-center">
           <img src="/logo.png" alt="Logo" className="mb-3" style={{ height: "64px" }} />
-          <h1 className="fw-bold text-dark" style={{ fontSize: "3rem" }}>Eventure</h1>
+          <h1 className="fw-bold text-dark" style={{ fontSize: "3rem" }}>EventMate</h1>
         </div>
       </div>
     </div>

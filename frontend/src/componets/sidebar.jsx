@@ -58,8 +58,8 @@ const Sidebar = ({ onLogout }) => {
     >
       {/* ✅ Logo + Title */}
       <div className="mb-4 d-flex align-items-center gap-2">
-        <img src="/logo.png" alt="Eventure" style={{ height: "40px" }} />
-        <h4 className="fw-bold text-white mb-0">Eventure</h4>
+        <img src="/logo.png" alt="EventMate" style={{ height: "40px" }} />
+        <h4 className="fw-bold text-white mb-0">EventMate</h4>
       </div>
 
       {/* ✅ Create Quick Event Button */}

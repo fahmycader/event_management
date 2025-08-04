@@ -1,6 +1,6 @@
-# 🎉 Eventure – Event Management System
+# 🎉 EventMate – Event Management System
 
-Eventure is a **full-stack event management platform** that allows **planners** to create and manage events while **attendees** can browse, RSVP, and interact with events seamlessly.  
+EventMate is a **full-stack event management platform** that allows **planners** to create and manage events while **attendees** can browse, RSVP, and interact with events seamlessly.  
 
 Built with **React, Node.js, Express, and MongoDB**, the platform supports **role-based access**, authentication, and dynamic event features like RSVP tracking.
 
